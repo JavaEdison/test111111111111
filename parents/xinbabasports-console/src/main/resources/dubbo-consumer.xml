@@ -1,0 +1,40 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/task
+   		http://www.springframework.org/schema/task/spring-task-4.0.xsd
+		http://code.alibabatech.com/schema/dubbo        
+		http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+		<!-- Dubbo消费方 -->
+		<!-- 计算机名 -->
+		<dubbo:application name="xinbabasports-console"/>
+		<!-- 注册中心  check=false是为了在先启动服务消费方时，不检查注册中心和服务提供方是否启动-->
+		<dubbo:registry address="192.168.16.201:2181" protocol="zookeeper" check="false"/>
+		<!-- 获取接口及其实现类 -->
+		<dubbo:reference interface="com.zjf.babasports.service.TestDbService" id="testDbService" url="dubbo://192.168.16.200:20880" check="false"/>
+		<dubbo:reference interface="com.zjf.babasports.service.BrandService" id="brandService" url="dubbo://192.168.16.200:20880" check="false"/>
+		<dubbo:reference interface="com.zjf.babasports.service.ProductService" id="productService" url="dubbo://192.168.16.200:20880" check="false"/>
+		<dubbo:reference interface="com.zjf.babasports.service.ColorService" id="colorService" url="dubbo://192.168.16.200:20880" check="false"/>
+		<dubbo:reference interface="com.zjf.babasports.service.SkuService" id="skuService" url="dubbo://192.168.16.200:20880" check="false"/>
+		<!-- <dubbo:reference interface="com.zjf.babasports.service.SolrService" id="solrService" url="dubbo://192.168.16.200:20881" check="false"/> -->
+		<!-- 服务消费方先请求控制中心，控制中心返回一个服务提供发的地址，
+		服务消费方在请求时默认是1秒时间间隔，一秒过后自动断开连接，
+		然后请求控制中心重新返回一个新的地址，再去请求，防止服务方集群 
+		有一台断掉之后影响消费方的使用，但是在开发过程中，如果设置时间为1秒，
+		不利于程序员debug调试，所以下方设置是为在开发中方便调试-->
+		<dubbo:consumer timeout="600000"/>
+</beans>
